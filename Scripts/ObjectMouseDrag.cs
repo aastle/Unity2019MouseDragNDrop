@@ -1,6 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
+
+
+[System.Serializable]
+public class UEvent : UnityEvent<string> { }
 
 public class ObjectMouseDrag : MonoBehaviour
 {
@@ -32,6 +38,8 @@ public class ObjectMouseDrag : MonoBehaviour
 
     Rigidbody2D rigidBody;
 
+    UEvent  hitEvent;
+
 
     private void Awake()
     {
@@ -52,6 +60,11 @@ public class ObjectMouseDrag : MonoBehaviour
         rigidBody.gravityScale = 0f;
 
 
+        if (hitEvent == null)
+            hitEvent = new UEvent();
+
+        hitEvent.AddListener(GameManager.ManagerListener);
+
         initialPosition = transform.position;
 
         soundSource = gameObject.AddComponent<AudioSource>();
@@ -69,9 +82,6 @@ public class ObjectMouseDrag : MonoBehaviour
 
             deltax = Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x;
             deltay = Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y;
-
-
-
         }
     }
     private void OnMouseDrag()
@@ -110,7 +120,7 @@ public class ObjectMouseDrag : MonoBehaviour
 
                 collided = false;
 
-                
+                hitEvent.Invoke(gameObject.tag);
             }
             else
             {

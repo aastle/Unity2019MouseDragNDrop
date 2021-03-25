@@ -37,11 +37,11 @@ public class GameManager : MonoBehaviour
 
     private bool coroutineAllowed;
 
-    private ObjectMouseDrag[] planetsList;
+    private static ObjectMouseDrag[] planetsList;
 
     private ObjectMouseDrag mouseDragScript;
 
-
+    private static List<string> planetNamesList;
 
     public static GameManager i
     {
@@ -65,6 +65,8 @@ public class GameManager : MonoBehaviour
 
 
         planetsList = FindObjectsOfType<ObjectMouseDrag>();
+
+        planetNamesList = new List<string>();
         
 
         Debug.Log("planetList count of objects of type ObjectMouseDrag " + planetsList.Count().ToString());
@@ -88,53 +90,26 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-        if (scene.name == "ScenePlanetNames")
-        {
-            bool allLocked = planetsList.All(n => n.locked);
-
-            if (allLocked)
-            {
-                Debug.Log("All Locked!");
-                
-
-            }
-        }
-
-
-        if (scene.name == "ScenePlay02")
-        {
-            if (BreadMouseDrag.locked && CandyMouseDrag.locked && CoconutMouseDrag.locked)
-            {
-
-                winText.SetActive(true);
-
-                AudioManager.PlaySound(AudioManager.Sound.playWinSound);
-
-                BreadMouseDrag.locked = false;
-                CandyMouseDrag.locked = false;
-                CoconutMouseDrag.locked = false;
-
-                if (coroutineAllowed)
-                { StartCoroutine(ShowReplayButtonCoroutine()); }
-            }
-        }
+        
     }
 
 
-    IEnumerator ShowNextgButtonCoroutine()
+    public static void ManagerListener(string tag)
     {
-        //Print the time of when the function is first called.
-        Debug.Log("Started Coroutine at timestamp : " + Time.time);
+        Debug.Log("gameObjecct " + tag + ", sent GameManager.ManagerListener an event");
 
-        //yield on a new YieldInstruction that waits for 5 seconds.
-        yield return new WaitForSeconds(5);
 
-        //After we have waited 5 seconds print the time again.
-        Debug.Log("Finished Coroutine at timestamp : " + Time.time);
-        nextButton.SetActive(true);
+        planetNamesList.Add(tag);
+        planetNamesList.ForEach(n=> Debug.Log("Hi from " + n.ToString()));
 
+        bool allLocked = planetsList.All(n => n.locked);
+
+        if (allLocked)
+        {
+            Debug.Log("All Locked!");
+
+        }
     }
-
 
     IEnumerator ShowReplayButtonCoroutine()
     {
@@ -186,12 +161,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    public void NextScene()
-    {
-       // titleText.SetActive(false);
-        SceneManager.LoadScene("ScenePlay02");
-    }
-
+   
 
 
     public void Replay()
