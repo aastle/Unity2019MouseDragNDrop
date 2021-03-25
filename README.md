@@ -9,4 +9,4 @@ The hit detection implementation used a comparision of dropped game object cente
 
 
 March 25, 2021
-A custom, overriden UnityEvent class was added to the MouseDragDrop class so that when the current game object is dropped on its target, it was raise an event and invoke an event handler in the GameManager class.  The event handler adds the tag to a list of game object tags.
+A custom, overriden UnityEvent class was added to the ObjectMouseDrag class.  This custom UnityEvent class adds a single input parameter of the type string. This UnityEvent is used so that when the current game object is dropped on its target, it will raise the custom Unity event and invoke an event handler in the GameManager class.  The event handler adds the string tag from the Unity event to a list of game object tags.  The GameManager event handler then checks to see if all of the ObjectMouseDrag script components from each draggable game object have a true value for the static "locked" property of the ObjectMouseDrag script component.
