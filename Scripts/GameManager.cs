@@ -21,6 +21,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public GameObject replayButton;
 
+    [SerializeField]
+    public AudioClip winClip;
+
+    private AudioSource soundSource;
 
     public static bool win;
 
@@ -69,8 +73,8 @@ public class GameManager : MonoBehaviour
     {
         scene = SceneManager.GetActiveScene();
 
-        
-        
+        soundSource = gameObject.AddComponent<AudioSource>();
+
 
         win = false;
         hit = false;
@@ -125,7 +129,16 @@ public class GameManager : MonoBehaviour
             Debug.Log("All Locked!");
             i.winText.SetActive(true);
 
+            i.StartCoroutine("WaitForAudioCoroutine");
+
         }
+    }
+
+    IEnumerator WaitForAudioCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+
+        i.soundSource.PlayOneShot(i.winClip, 1f);
     }
 
     IEnumerator ShowReplayButtonCoroutine()
