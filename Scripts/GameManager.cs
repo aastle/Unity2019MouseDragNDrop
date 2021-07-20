@@ -31,7 +31,6 @@ public class GameManager : MonoBehaviour
 
     private Scene scene;
 
-    private static GameManager _i;
 
     public bool playMusic;
 
@@ -43,22 +42,35 @@ public class GameManager : MonoBehaviour
 
     private static List<string> planetNamesList;
 
+
+    private static GameManager _i;
+
     public static GameManager i
     {
         get
         {
-            if (_i == null) _i = Instantiate(Resources.Load<GameManager>("GameManager"));
             return _i;
         }
     }
 
-
+    private void Awake()
+    {
+        if (_i != null && _i != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _i = this;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
         scene = SceneManager.GetActiveScene();
 
-
+        
+        
 
         win = false;
         hit = false;
@@ -74,12 +86,13 @@ public class GameManager : MonoBehaviour
         if (scene.name == "TitleScene")
         {
             winText.SetActive(false);
-            titleText.SetActive(true);
+            // titleText.SetActive(true);
         }
-        if (scene.name == "SampleScene" || scene.name == "ScenePlay02")
+        if (scene.name == "SampleScene" || scene.name == "ScenePlanetNames")
         {
-            //titleText.SetActive(false);
-            nextButton.SetActive(false);
+            // titleText.SetActive(false);
+           // nextButton.SetActive(false);
+            i.winText.SetActive(false);
         }
 
         coroutineAllowed = true;
@@ -89,24 +102,28 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       
 
-        
     }
 
 
     public static void ManagerListener(string tag)
     {
+
+        i.winText.SetActive(false);
+
         Debug.Log("gameObjecct " + tag + ", sent GameManager.ManagerListener an event");
 
 
         planetNamesList.Add(tag);
         planetNamesList.ForEach(n=> Debug.Log("Hi from " + n.ToString()));
 
-        bool allLocked = planetsList.All(n => n.locked);
+        
 
-        if (allLocked)
+        if (planetsList.All(n => n.locked))
         {
             Debug.Log("All Locked!");
+            i.winText.SetActive(true);
 
         }
     }
@@ -155,7 +172,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         titleText.SetActive(false);
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("ScenePlanetNames");
 
     }
 
